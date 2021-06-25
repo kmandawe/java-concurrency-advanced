@@ -81,7 +81,7 @@ public class ProducerConsumerWithLocks {
     producersAndConsumers.addAll(producers);
     producersAndConsumers.addAll(consumers);
 
-    ExecutorService executorService = Executors.newFixedThreadPool(8);
+    ExecutorService executorService = Executors.newFixedThreadPool(4);
     try {
       List<Future<String>> futures = executorService.invokeAll(producersAndConsumers);
 
