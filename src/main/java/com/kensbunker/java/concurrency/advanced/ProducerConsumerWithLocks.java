@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,14 +24,16 @@ public class ProducerConsumerWithLocks {
     class Consumer implements Callable<String> {
 
       @Override
-      public String call() throws Exception {
+      public String call() throws InterruptedException, TimeoutException {
         int count = 0;
         while (count++ < 50) {
           try {
             lock.lock();
             while (isEmpty(buffer)) {
               // wait
-              isEmpty.await();
+              if (!isEmpty.await(10, TimeUnit.MILLISECONDS)) {
+                throw new TimeoutException("Consumer time out");
+              }
             }
             buffer.remove(buffer.size() - 1);
             // signal
@@ -50,6 +54,7 @@ public class ProducerConsumerWithLocks {
         while (count++ < 50) {
           try {
             lock.lock();
+            int i = 10/0;
             while (isFull(buffer)) {
               // wait
               isFull.await();
@@ -81,7 +86,7 @@ public class ProducerConsumerWithLocks {
     producersAndConsumers.addAll(producers);
     producersAndConsumers.addAll(consumers);
 
-    ExecutorService executorService = Executors.newFixedThreadPool(4);
+    ExecutorService executorService = Executors.newFixedThreadPool(8);
     try {
       List<Future<String>> futures = executorService.invokeAll(producersAndConsumers);
 
