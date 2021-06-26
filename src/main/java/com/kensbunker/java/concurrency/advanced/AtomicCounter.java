@@ -6,9 +6,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AtomicCounter {
-  private static int counter = 0;
+  private static AtomicInteger counter = new AtomicInteger(0);
 
   public static void main(String[] args) {
     class Incrementer implements Runnable {
@@ -16,7 +17,7 @@ public class AtomicCounter {
       @Override
       public void run() {
         for (int i = 0; i < 1_000; i++) {
-          counter++;
+          counter.incrementAndGet();
         }
       }
     }
@@ -26,7 +27,7 @@ public class AtomicCounter {
       @Override
       public void run() {
         for (int i = 0; i < 1_000; i++) {
-          counter--;
+          counter.decrementAndGet();
         }
       }
     }
