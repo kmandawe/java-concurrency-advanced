@@ -19,7 +19,7 @@ public class BarrierInAction {
       @Override
       public String call() throws Exception {
         Random random = new Random();
-        Thread.sleep(random.nextInt(20) * 1000 + 100);
+        Thread.sleep(random.nextInt(5) * 1000 + 100);
         System.out.println("I just arrived, waiting for the others...");
 
         barrier.await();
@@ -29,7 +29,7 @@ public class BarrierInAction {
     }
 
     ExecutorService executorService = Executors.newFixedThreadPool(4);
-    CyclicBarrier barrier = new CyclicBarrier(4);
+    CyclicBarrier barrier = new CyclicBarrier(4, () -> System.out.println("Barrier opening"));
     List<Future<String>> futures = new ArrayList<>();
 
     try {
