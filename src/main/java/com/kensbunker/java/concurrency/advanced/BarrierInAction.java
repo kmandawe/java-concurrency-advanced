@@ -18,13 +18,18 @@ public class BarrierInAction {
 
       @Override
       public String call() throws Exception {
-        Random random = new Random();
-        Thread.sleep(random.nextInt(5) * 1000 + 100);
-        System.out.println("I just arrived, waiting for the others...");
+        try {
+          Random random = new Random();
+          Thread.sleep(random.nextInt(5) * 1000 + 100);
+          System.out.println("I just arrived, waiting for the others...");
 
-        barrier.await(5, TimeUnit.SECONDS);
-        System.out.println("Let's go to the cinema!");
-        return "ok";
+          barrier.await();
+          System.out.println("Let's go to the cinema!");
+          return "ok";
+        } catch (InterruptedException e) {
+          System.out.println("Interrupted");
+        }
+        return "nok";
       }
     }
 
@@ -41,9 +46,12 @@ public class BarrierInAction {
       futures.forEach(
           future -> {
             try {
-              future.get();
+              future.get(200, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
               System.out.println(e.getMessage());
+            } catch (TimeoutException e) {
+              System.out.println("Timed out");
+              future.cancel(true);
             }
           });
     } finally {
