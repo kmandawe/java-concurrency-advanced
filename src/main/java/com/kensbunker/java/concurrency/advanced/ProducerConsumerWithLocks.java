@@ -1,4 +1,5 @@
 package com.kensbunker.java.concurrency.advanced;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -54,7 +55,7 @@ public class ProducerConsumerWithLocks {
         while (count++ < 50) {
           try {
             lock.lock();
-            int i = 10/0;
+            int i = 10 / 0;
             while (isFull(buffer)) {
               // wait
               isFull.await();
