@@ -20,6 +20,14 @@ public class Actor {
   }
 
   @Override
+  public String toString() {
+    return "Actor{" +
+        "lastName='" + lastName + '\'' +
+        ", firstName='" + firstName + '\'' +
+        '}';
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
