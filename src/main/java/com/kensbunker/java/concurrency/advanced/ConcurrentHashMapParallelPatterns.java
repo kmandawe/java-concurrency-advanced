@@ -18,5 +18,9 @@ public class ConcurrentHashMapParallelPatterns {
 
     Actor mostSeenActor = map.search(10, (actor, movies) -> movies.size() == maxMoviesForOneActor ? actor : null);
     System.out.println("Most seen actor = " + mostSeenActor);
+
+    int numberOfMoviesReferences = map.reduce(10, (actor, movies) -> movies.size(), Integer::sum);
+
+    System.out.println("Average movies per actor = " + numberOfMoviesReferences/map.size());
   }
 }
